@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        /* Mặc định cho desktop */
+        body{
+            margin: 0;
+            padding: 0;
+            background-image: url("bg2.jpg");
+            background-repeat: no-repeat;
+            background-size: cover; 
+            background-attachment: fixed;
+            background-position: center;
+            height: 100%;
+            font-family: Arial, Helvetica, sans-serif;
+
+        }
+
+        /* Tablet */
+        @media screen and (max-width: 1024px) {
+            body{
+                margin: 0;
+                padding: 0;
+                background-image: url("bg2.jpg");
+                background-repeat: no-repeat;
+                background-size: cover; 
+                background-attachment: fixed;
+                background-position: center;
+                height: 100%;
+                font-family: Arial, Helvetica, sans-serif;
+            }
+        }
+
+        /* Mobile */
+        @media screen and (max-width: 600px) {
+            body {
+                margin: 0;
+                padding: 0;
+                background-image: url("bg2.jpg");
+                background-repeat: no-repeat;
+                background-size: cover; 
+                background-attachment: fixed;
+                background-position: center;
+                height: 100%; 
+                width: 100%;
+                font-family: Arial, Helvetica, sans-serif;
+                display: flex; 
+                align-items: center; 
+                justify-content: center;
+            }
+
+            .form{
+                width: 90%;
+                margin: 5%;
+                background: rgba(255, 255, 255, 0.2);
+                backdrop-filter: blur(10px);
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+                padding: 10px;
+                text-align: center;
+            }
+            p{
+                color: #67044a;
+                font-size: large;
+            }
+            h2 {
+                font-weight: bold;
+                text-align: center;
+                background: linear-gradient(45deg, #8a2be2, #6a0dad, #9932cc, #ba55d3);
+                background-size: 300% 300%;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                animation: gradientMove 3s infinite linear;
+            }
+            @keyframes gradientMove {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+            #Url_video {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 100%;
+                max-width: 400px; /* Giới hạn kích thước tối đa của form */
+                margin: auto;
+            }
+
+            input, button {
+                width: 100%; /* Cùng độ rộng */
+                padding: 10px;
+                font-size: 16px;
+                box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                margin-bottom: 10px;
+            }
+            input{
+                border: 2px solid #df1ca5;
+            }
+
+            button {
+                font-weight: bold;
+                color: white;
+                border-radius: 8px;
+                text-decoration: none;
+                border: none;
+                cursor: pointer;
+                background: linear-gradient(45deg, #8e2de2, #f43abc,#df1ca5);
+                transition: all 0.3s ease;
+            }
+
+            button:hover {
+                background-color: #0056b3;
+            }
+            img{
+                width: 100%;
+                border: 3px solid #ffffff;
+                border-radius: 10px;
+            }
+
+        }
+
+    </style>
+</head>
+<body>
+    <div id="form_GetUrl" class="form">
+        <h2>Download Video</h2>
+        <form id="Url_video" action="Information_Video.php" method="get">
+            <input type="text" name="Url" id="Url" placeholder="Anh điền link video vào đây.">
+            <button type="button" onclick="pasteLink()">Dán link</button>
+        </form>
+        <h2>Anh tải video từ nền tảng nào thì chọn vào nền tảng đấy.</h2>
+        <div class="button-container">
+            <button class="social-button" onclick="Infor_Video_Facebook()">Download Video Facebook</button>
+            <button class="social-button">Download Video YouTube</button>
+            <button class="social-button">Download Mp3 YouTube</button>
+            <button class="social-button" onclick="Infor_Video_Tiktok()">Download Video TikTok</button>
+            <button class="social-button" onclick="Infor_Photo_Tiktok()">Download Photo TikTok</button>
+        </div>
+        <p>Copyright © Nộc Bép đẹp trai :)</p>
+    </div>
+
+    <div id="form_InfoVideo" style="display: none;" class="form">
+        <h2>Thông Tin Video</h2>
+        <img id="thumbnail" src="" alt="Hình ảnh">
+        <h3 id="title"></h3>
+        <div id="downloadButtons"></div>
+        <div id="mp3"></div>
+        <div class="button-container">
+            <button onclick="Exit()" style="margin-top: 30px;" class="social-button">Download Other Videos</button>
+        </div>
+    </div>
+
+    <script>
+        function pasteLink() {
+            navigator.clipboard.readText().then(text => {
+                document.getElementById('Url').value = text;
+            }).catch(err => {
+                console.error('Lỗi khi dán link:', err);
+            });
+        }
+        function Exit(){
+            window.location.href = "Index.html";
+        }
+
+        function Infor_Video_Facebook() {
+            let videoUrl = document.getElementById("Url").value.trim();
+            if (!videoUrl) {
+                alert("Vui lòng nhập link video Facebook.");
+                return;
+            }
+
+            const settings = {
+                async: true,
+                crossDomain: true,
+                url: `https://facebook-video-downloader9.p.rapidapi.com/download?url=${encodeURIComponent(videoUrl)}`,
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': '23440d752fmsh0bce66bf6c5a2c0p1486cfjsn35a15b05da7d',
+                    'x-rapidapi-host': 'facebook-video-downloader9.p.rapidapi.com'
+                }
+            };
+
+            $.ajax(settings).done(function (response) {
+                if (response && response.data && response.data.video) {
+                    let videoData = response.data.video;
+                    let downloadData = response.data.download;
+
+                    // Cập nhật thông tin video
+                    document.getElementById("thumbnail").src = videoData.thumbnail_url;
+                    document.getElementById("title").textContent = videoData.title || "Không có tiêu đề";
+
+                    let downloadButtons = "";
+                    if (downloadData.hd && downloadData.hd.url) {
+                        downloadButtons += `<button onclick="Download_Video_Facebook('${downloadData.hd.url}', 'Video_facebook_${videoData.id}_${downloadData.sd.quality}.mp4')">Download Video HD (Chất lượng cao)</button>`;
+                    }
+                    if (downloadData.sd && downloadData.sd.url) {
+                        downloadButtons += `<button onclick="Download_Video_Facebook('${downloadData.sd.url}', 'Video_facebook_${videoData.id}_${downloadData.sd.quality}.mp4')">Download Video SD (Chất lương thấp)</button>`;
+                    }
+                    document.getElementById("downloadButtons").innerHTML = downloadButtons;
+
+                    // Ẩn form nhập link, hiển thị form thông tin video
+                    $("#form_GetUrl").fadeOut(500, function () {
+                        $("#form_InfoVideo").fadeIn(500);
+                    });
+
+                } else {
+                    alert("Không thể lấy thông tin video. Hãy thử lại.");
+                }
+            }).fail(function () {
+                alert("Lỗi khi tải dữ liệu. Hãy kiểm tra API key hoặc thử lại sau.");
+            });
+        }
+        async function Download_Video_Facebook(url, filename) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            } catch (error) {
+                console.error("Lỗi tải video về:", error);
+            }
+        }
+    
+        function Infor_Video_Tiktok(){
+            let videoUrl = document.getElementById("Url").value.trim();
+            if (!videoUrl) {
+                alert("Vui lòng nhập link video Facebook.");
+                return;
+            }
+            const settings = {
+                async: true,
+                crossDomain: true,
+                url: 'https://tiktok-video-no-watermark2.p.rapidapi.com/',
+                method: 'POST',
+                headers: {
+                    'x-rapidapi-key': '23440d752fmsh0bce66bf6c5a2c0p1486cfjsn35a15b05da7d',
+                    'x-rapidapi-host': 'tiktok-video-no-watermark2.p.rapidapi.com',
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                data: {
+                    url: videoUrl,
+                    hd: '1'
+                }
+            };
+            $.ajax(settings).done(function (response) {
+                if (response && response.data) {
+                    let infor = response.data;
+
+                    document.getElementById("thumbnail").src = infor.cover;
+                    document.getElementById("title").textContent = infor.title || "Video Tiktok không có tiêu đề";
+                    let downloadButtons = `<button onclick="Download_Video_Tiktok('${infor.play}','Video_tiktok_${infor.title.replace(/[^a-zA-Z0-9._-]/g, "")}.mp4')">Download Video</button>`;
+                    document.getElementById("downloadButtons").innerHTML = downloadButtons;
+                    $("#form_GetUrl").fadeOut(500, function () {
+                        $("#form_InfoVideo").fadeIn(500);
+                    });
+                } else {
+                    alert("Không thể lấy thông tin video. Hãy thử lại.");
+                }
+            }).fail(function () {
+                alert("Lỗi khi tải dữ liệu. Hãy kiểm tra API key hoặc thử lại sau.");
+            });
+        }
+        async function Download_Video_Tiktok(url, filename) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            } catch (error) {
+                console.error("Lỗi tải video về:", error);
+            }
+        }
+        
+        function Infor_Photo_Tiktok() {
+            let videoUrl = document.getElementById("Url").value.trim();
+            if (!videoUrl) {
+                alert("Vui lòng nhập link video TikTok.");
+                return;
+            }
+
+            const settings = {
+                async: true,
+                crossDomain: true,
+                url: 'https://social-download-all-in-one.p.rapidapi.com/v1/social/autolink',
+                method: 'POST',
+                headers: {
+                    'x-rapidapi-key': '16b4ac5d04mshb89df8a7dc520ddp139441jsndae93f956380',
+                    'x-rapidapi-host': 'social-download-all-in-one.p.rapidapi.com',
+                    'Content-Type': 'application/json'
+                },
+                processData: false,
+                data: JSON.stringify({ url: videoUrl })
+            };
+
+            $.ajax(settings).done(function (response) {
+                if (response && response.title) {
+                    let now = new Date().toISOString().replace(/[:.]/g, "-"); // Chuyển đổi thời gian thành chuỗi hợp lệ
+                    document.getElementById("thumbnail").style.display = "none";
+                    document.getElementById("downloadButtons").innerHTML = "";
+                    document.getElementById("mp3").innerHTML = "";
+
+                    document.getElementById("title").textContent=response.title; 
+                    let Photo_tiktok = ""; // Chứa danh sách ảnh
+                    let mp3 = ""; // Chứa danh sách file MP3
+
+                    if (response.medias && response.medias.length > 0) {
+                        response.medias.forEach((media, index) => {
+                            if (media.type === 'image') {
+                                Photo_tiktok += `
+                                    <div>
+                                        <img src="${media.url}" style="max-width: 100%; border-radius: 10px;">
+                                        <button onclick="Download_Photo_Tiktok('${media.url}', 'tiktok_image_${index}_${now}.${media.extension}')">Download Photo ${index + 1}
+                                        </button>
+                                    </div>
+                                    <br>
+                                `;
+                            }
+                        });
+
+                        response.medias.forEach((media, index) => {
+                            if (media.type === 'audio') {
+                                mp3 += `
+                                    <div>
+                                        <h4>File MP3</h4>
+                                        <button onclick="Download_Photo_Tiktok('${media.url}', 'mp3_${index}_${now}.${media.extension}')">Download Mp3
+                                        </button>
+                                    </div>
+                                    <br>
+                                `;
+                            }
+                        });
+                    } else {
+                        alert("Không tìm thấy ảnh hoặc file MP3.");
+                    }
+
+                    // Hiển thị ảnh trước, rồi đến file MP3
+                    document.getElementById("downloadButtons").innerHTML = Photo_tiktok;
+                    document.getElementById("mp3").innerHTML = mp3;
+
+                    $("#form_GetUrl").fadeOut(300, function () {
+                        $("#form_InfoVideo").fadeIn(300);
+                    });
+                } else {
+                    alert("Không tìm thấy ảnh từ TikTok. Vui lòng kiểm tra lại link!");
+                }
+            }).fail(function () {
+                alert("Lỗi khi tải dữ liệu. Hãy kiểm tra API key hoặc thử lại sau.");
+            });
+
+        }
+
+        async function Download_Photo_Tiktok(url, filename) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = filename;
+                link.click();
+                URL.revokeObjectURL(link.href);
+            } catch (error) {
+                console.error("Lỗi tải về:", error);
+            }
+        }
+
+
+    </script>
+</body>
+</html>
