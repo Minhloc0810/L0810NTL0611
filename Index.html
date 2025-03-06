@@ -137,8 +137,8 @@
         <h2>Anh tải video từ nền tảng nào thì chọn vào nền tảng đấy.</h2>
         <div class="button-container">
             <button class="social-button" onclick="Infor_Video_Facebook()">Download Video Facebook</button>
-            <button class="social-button">Download Video YouTube</button>
-            <button class="social-button">Download Mp3 YouTube</button>
+            <button class="social-button" onclick="Infor_Video_youtube()" >Download Video YouTube</button>
+            <button class="social-button" onclick="Infor_Mp3_Youtube()">Download Mp3 YouTube</button>
             <button class="social-button" onclick="Infor_Video_Tiktok()">Download Video TikTok</button>
             <button class="social-button" onclick="Infor_Photo_Tiktok()">Download Photo TikTok</button>
         </div>
@@ -306,14 +306,14 @@
 
             $.ajax(settings).done(function (response) {
                 if (response && response.title) {
-                    let now = new Date().toISOString().replace(/[:.]/g, "-"); // Chuyển đổi thời gian thành chuỗi hợp lệ
+                    let now = new Date().toISOString().replace(/[:.]/g, "-"); 
                     document.getElementById("thumbnail").style.display = "none";
                     document.getElementById("downloadButtons").innerHTML = "";
                     document.getElementById("mp3").innerHTML = "";
 
                     document.getElementById("title").textContent=response.title; 
-                    let Photo_tiktok = ""; // Chứa danh sách ảnh
-                    let mp3 = ""; // Chứa danh sách file MP3
+                    let Photo_tiktok = ""; 
+                    let mp3 = ""; 
 
                     if (response.medias && response.medias.length > 0) {
                         response.medias.forEach((media, index) => {
@@ -345,7 +345,6 @@
                         alert("Không tìm thấy ảnh hoặc file MP3.");
                     }
 
-                    // Hiển thị ảnh trước, rồi đến file MP3
                     document.getElementById("downloadButtons").innerHTML = Photo_tiktok;
                     document.getElementById("mp3").innerHTML = mp3;
 
@@ -360,7 +359,6 @@
             });
 
         }
-
         async function Download_Photo_Tiktok(url, filename) {
             try {
                 const response = await fetch(url);
@@ -373,6 +371,160 @@
             } catch (error) {
                 console.error("Lỗi tải về:", error);
             }
+        }
+
+        function getYouTubeVideoId(url) {
+            const regExp = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/;
+            const match = url.match(regExp);
+            return match ? match[1] : null;
+        }
+
+        function Infor_Video_youtube(){
+            let url = document.getElementById("Url").value.trim();
+            if (!url) {
+                alert("Vui lòng nhập link video YouTube.");
+                return;
+            }
+            const videoUrl = getYouTubeVideoId(url);
+            if (!videoUrl) {
+                alert("URL không hợp lệ.");
+                return;
+            }
+
+            const settings = {
+                async: true,
+                crossDomain: true,
+                url: 'https://cloud-api-hub-youtube-downloader.p.rapidapi.com/info?id=' + videoUrl,
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': '23440d752fmsh0bce66bf6c5a2c0p1486cfjsn35a15b05da7d',
+                    'x-rapidapi-host': 'cloud-api-hub-youtube-downloader.p.rapidapi.com'
+                }
+            };
+
+            $.ajax(settings).done(function (response) {
+                if (response) {
+
+                    document.getElementById("thumbnail").src = response.thumbnails[4].url;
+                    document.getElementById("title").textContent = response.title || "Không có tiêu đề";
+
+                    let downloadButtons = `
+                    <button onclick="Download_Video_Youtube('${videoUrl}', '144')">Download Video 144P</button>
+                    <button onclick="Download_Video_Youtube('${videoUrl}', '360')">Download Video 360P</button>
+                    <button onclick="Download_Video_Youtube('${videoUrl}', '720')">Download Video 720P (HD)</button>
+                    <button onclick="Download_Video_Youtube('${videoUrl}', '1080')">Download Video 1080P (FULL HD)</button>
+                    <button onclick="Download_Video_Youtube('${videoUrl}', '2160')">Download Video 2160P (4K UHD)</button>
+                    <button onclick="Download_Video_Youtube('${videoUrl}', '4320')">Download Video 4320 (8K UHD)</button>
+                    <button onclick="Download_Video_Youtube('${videoUrl}', 'max')">Download Video Quality MAX</button>
+                    `;
+                    document.getElementById("downloadButtons").innerHTML = downloadButtons;
+
+                    $("#form_GetUrl").fadeOut(500, function () {
+                        $("#form_InfoVideo").fadeIn(500);
+                    });
+
+                } else {
+                    alert("Không thể lấy thông tin video. Hãy thử lại.");
+                }
+            }).fail(function () {
+                alert("Lỗi khi tải dữ liệu. Hãy kiểm tra API key hoặc thử lại sau.");
+            });
+        }
+        function Download_Video_Youtube(url, quality) {
+            const apiUrl = `https://cloud-api-hub-youtube-downloader.p.rapidapi.com/mux?id=${url}&quality=${quality}&audioFormat=best&language=en`;
+
+            const settings = {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': '04275214aemsh14a4471cee4ae06p179daejsn4ad3eb3b8f50',
+                    'x-rapidapi-host': 'cloud-api-hub-youtube-downloader.p.rapidapi.com'
+                }
+            };
+
+            $.ajax(settings).done(function (response) {
+                if (response && response.url) {
+                    const filename = `${quality}_${response.filename}`;
+                    StartDownload_Videoyoutube(response.url, filename);
+                } else {
+                    alert("Không tìm thấy video hoặc lỗi API.");
+                }
+            }).fail(function () {
+                alert("Lỗi khi gọi APuyyuffuitI. Vui lòng kiểm tra lại.");
+            });
+        }
+        async function StartDownload_Videoyoutube(url, filename) {
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const downloadUrl = window.URL.createObjectURL(blob); // Đổi tên để tránh xung đột
+
+                const a = document.createElement('a');
+                a.href = downloadUrl;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+
+                window.URL.revokeObjectURL(downloadUrl);
+            } catch (error) {
+                alert("Lỗi khi tải video. Vui lòng thử lại!");
+                console.error("Error:", error);
+            }
+        }
+
+        function Infor_Mp3_Youtube() {
+            let url = document.getElementById("Url").value.trim();
+            if (!url) {
+                alert("Vui lòng nhập link video YouTube.");
+                return;
+            }
+
+            const videoUrl = getYouTubeVideoId(url);
+            if (!videoUrl) {
+                alert("URL không hợp lệ.");
+                return;
+            }
+
+            const settings = {
+                async: true,
+                crossDomain: true,
+                url: 'https://youtube-mp3-2025.p.rapidapi.com/v1/social/youtube/audio',
+                method: 'POST',
+                headers: {
+                    'x-rapidapi-key': '04275214aemsh14a4471cee4ae06p179daejsn4ad3eb3b8f50',
+                    'x-rapidapi-host': 'youtube-mp3-2025.p.rapidapi.com',
+                    'Content-Type': 'application/json'
+                },
+                processData: false,
+                data: JSON.stringify({ id: videoUrl })
+            };
+
+            $.ajax(settings).done(function (response) {
+                if (!response || !response.thumbnail || !response.thumbnail.thumbnails) {
+                    alert("Không thể lấy thông tin video. Vui lòng thử lại.");
+                    return;
+                }
+
+                let thumbnails = response.thumbnail.thumbnails;
+                let thumbnailUrl = thumbnails.length > 4 ? thumbnails[4].url : thumbnails[thumbnails.length - 1].url;
+                document.getElementById("thumbnail").src = thumbnailUrl;
+                document.getElementById("title").textContent = response.title || "Không có tiêu đề";
+
+                // Tạo button tải với sự kiện đúng
+                let downloadButtons = `<button onclick="Download_Mp3_Youtube('${response.linkDownload}', '${response.videoId}')">Download File Mp3</button>`;
+                document.getElementById("downloadButtons").innerHTML = downloadButtons;
+
+                // Chuyển form hiển thị
+                $("#form_GetUrl").fadeOut(500, function () {
+                    $("#form_InfoVideo").fadeIn(500);
+                });
+            }).fail(function () {
+                alert("Lỗi khi tải dữ liệu. Hãy kiểm tra API hoặc thử lại sau.");
+            });
+        }
+
+        async function Download_Mp3_Youtube(url2, filename) {
+            window.location.href = url2;
         }
 
 
