@@ -3,127 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Download</title>
+    <title>Nộc Bép</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        /* Mặc định cho desktop */
-        body{
+        /* Áp dụng chung cho tất cả các thiết bị */
+        body {
             margin: 0;
             padding: 0;
-            background-image: url("bg2.jpg");
-            background-repeat: no-repeat;
-            background-size: cover; 
-            background-attachment: fixed;
-            background-position: center;
-            height: 100%;
+            background: url("bg2.jpg") no-repeat center center fixed;
+            background-size: cover;
             font-family: Arial, Helvetica, sans-serif;
-
+            min-height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
-        /* Tablet */
+        /* Form chính */
+        .form {
+            margin: 15px;
+            width: 90%;
+            max-width: 500px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            text-align: center;
+        }
+
+        /* Tiêu đề có hiệu ứng gradient */
+        h2 {
+            font-weight: bold;
+            text-align: center;
+            background: linear-gradient(45deg, #8a2be2, #6a0dad, #9932cc, #ba55d3);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientMove 3s infinite linear;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Nội dung chính */
+        p {
+            color: #67044a;
+            font-size: large;
+        }
+
+        /* Form nhập liệu */
+        #Url_video {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            max-width: 400px; /* Giới hạn kích thước form */
+            margin: auto;
+        }
+
+        input, button {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        input {
+            border: 2px solid #df1ca5;
+        }
+
+        button {
+            font-weight: bold;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            background: linear-gradient(45deg, #8e2de2, #f43abc, #df1ca5);
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        /* Ảnh */
+        img {
+            width: 100%;
+            border: 3px solid #ffffff;
+            border-radius: 10px;
+        }
+
+        /* Hiệu ứng Loading Popup */
+        #loadingMp3Popup, 
+        #loadingInforVideoPopup, 
+        #loadingVideoPopup, 
+        #loadingInforPhotoPopup, 
+        #loadingPhotoPopup {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .loading-container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        /* Spinner hiệu ứng xoay */
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 5px solid rgba(0, 0, 0, 0.3);
+            border-top: 5px solid #67044a;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive - Điều chỉnh thiết bị */
         @media screen and (max-width: 1024px) {
-            body{
-                margin: 0;
-                padding: 0;
-                background-image: url("bg2.jpg");
-                background-repeat: no-repeat;
-                background-size: cover; 
-                background-attachment: fixed;
-                background-position: center;
-                height: 100%;
-                font-family: Arial, Helvetica, sans-serif;
+            .form {
+                width: 95%;
+                max-width: 450px;
             }
         }
 
-        /* Mobile */
         @media screen and (max-width: 600px) {
             body {
-                margin: 0;
-                padding: 0;
-                background-image: url("bg2.jpg");
-                background-repeat: no-repeat;
-                background-size: cover; 
-                background-attachment: fixed;
-                background-position: center;
-                height: 100%; 
-                width: 100%;
-                font-family: Arial, Helvetica, sans-serif;
-                display: flex; 
-                align-items: center; 
-                justify-content: center;
+                justify-content: flex-start;
             }
-
-            .form{
+            
+            .form {
                 width: 90%;
-                margin: 5%;
-                background: rgba(255, 255, 255, 0.2);
-                backdrop-filter: blur(10px);
-                border-radius: 10px;
-                box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+                max-width: 400px;
                 padding: 10px;
-                text-align: center;
             }
-            p{
-                color: #67044a;
-                font-size: large;
-            }
-            h2 {
-                font-weight: bold;
-                text-align: center;
-                background: linear-gradient(45deg, #8a2be2, #6a0dad, #9932cc, #ba55d3);
-                background-size: 300% 300%;
-                -webkit-background-clip: text;
-                -webkit-text-fill-color: transparent;
-                animation: gradientMove 3s infinite linear;
-            }
-            @keyframes gradientMove {
-                0% { background-position: 0% 50%; }
-                50% { background-position: 100% 50%; }
-                100% { background-position: 0% 50%; }
-            }
-            #Url_video {
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                width: 100%;
-                max-width: 400px; /* Giới hạn kích thước tối đa của form */
-                margin: auto;
-            }
-
+            
             input, button {
-                width: 100%; /* Cùng độ rộng */
-                padding: 10px;
-                font-size: 16px;
-                box-sizing: border-box; /* Đảm bảo padding không làm tăng kích thước */
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                margin-bottom: 10px;
+                font-size: 14px;
             }
-            input{
-                border: 2px solid #df1ca5;
-            }
-
-            button {
-                font-weight: bold;
-                color: white;
-                border-radius: 8px;
-                text-decoration: none;
-                border: none;
-                cursor: pointer;
-                background: linear-gradient(45deg, #8e2de2, #f43abc,#df1ca5);
-                transition: all 0.3s ease;
-            }
-
-            button:hover {
-                background-color: #0056b3;
-            }
-            img{
-                width: 100%;
-                border: 3px solid #ffffff;
-                border-radius: 10px;
-            }
-
         }
+
+
 
     </style>
 </head>
@@ -134,7 +174,7 @@
             <input type="text" name="Url" id="Url" placeholder="Anh điền link video vào đây.">
             <button type="button" onclick="pasteLink()">Dán link</button>
         </form>
-        <h2>Anh tải video từ nền tảng nào thì chọn vào nền tảng đấy.</h2>
+        <h2>Anh sao chép link video từ nền tảng nào thì chọn vào nền tảng đấy.</h2>
         <div class="button-container">
             <button class="social-button" onclick="Infor_Video_Facebook()">Download Video Facebook</button>
             <button class="social-button" onclick="Infor_Video_youtube()" >Download Video YouTube</button>
@@ -174,7 +214,7 @@
                 alert("Vui lòng nhập link video Facebook.");
                 return;
             }
-
+            $('#loadingInforVideoPopup').fadeIn();
             const settings = {
                 async: true,
                 crossDomain: true,
@@ -187,6 +227,7 @@
             };
 
             $.ajax(settings).done(function (response) {
+                $('#loadingInforVideoPopup').fadeOut();
                 if (response && response.data && response.data.video) {
                     let videoData = response.data.video;
                     let downloadData = response.data.download;
@@ -217,6 +258,7 @@
             });
         }
         async function Download_Video_Facebook(url, filename) {
+            $("#loadingVideoPopup").fadeIn();
             try {
                 const response = await fetch(url);
                 const blob = await response.blob();
@@ -225,6 +267,7 @@
                 link.download = filename;
                 link.click();
                 URL.revokeObjectURL(link.href);
+                $("#loadingVideoPopup").fadeOut();
             } catch (error) {
                 console.error("Lỗi tải video về:", error);
             }
@@ -236,6 +279,7 @@
                 alert("Vui lòng nhập link video Facebook.");
                 return;
             }
+            $('#loadingInforVideoPopup').fadeIn();
             const settings = {
                 async: true,
                 crossDomain: true,
@@ -252,6 +296,7 @@
                 }
             };
             $.ajax(settings).done(function (response) {
+                $('#loadingInforVideoPopup').fadeOut();
                 if (response && response.data) {
                     let infor = response.data;
 
@@ -270,6 +315,7 @@
             });
         }
         async function Download_Video_Tiktok(url, filename) {
+            $('#loadingVideoPopup').fadeIn();
             try {
                 const response = await fetch(url);
                 const blob = await response.blob();
@@ -278,6 +324,7 @@
                 link.download = filename;
                 link.click();
                 URL.revokeObjectURL(link.href);
+                $('#loadingVideoPopup').fadeOut();
             } catch (error) {
                 console.error("Lỗi tải video về:", error);
             }
@@ -289,7 +336,7 @@
                 alert("Vui lòng nhập link video TikTok.");
                 return;
             }
-
+            $('#loadingInforPhotoPopup').fadeIn();
             const settings = {
                 async: true,
                 crossDomain: true,
@@ -305,6 +352,7 @@
             };
 
             $.ajax(settings).done(function (response) {
+                $('#loadingInforPhotoPopup').fadeOut();
                 if (response && response.title) {
                     let now = new Date().toISOString().replace(/[:.]/g, "-"); 
                     document.getElementById("thumbnail").style.display = "none";
@@ -360,6 +408,7 @@
 
         }
         async function Download_Photo_Tiktok(url, filename) {
+            $('#loadingPhotoPopup').fadeIn();
             try {
                 const response = await fetch(url);
                 const blob = await response.blob();
@@ -368,6 +417,7 @@
                 link.download = filename;
                 link.click();
                 URL.revokeObjectURL(link.href);
+                $('#loadingPhotoPopup').fadeOut();
             } catch (error) {
                 console.error("Lỗi tải về:", error);
             }
@@ -390,19 +440,21 @@
                 alert("URL không hợp lệ.");
                 return;
             }
+            $('#loadingInforVideoPopup').fadeIn();
 
             const settings = {
                 async: true,
                 crossDomain: true,
-                url: 'https://cloud-api-hub-youtube-downloader.p.rapidapi.com/info?id=' + videoUrl,
+                url: 'https://youtube-v2.p.rapidapi.com/video/details?video_id='+videoUrl,
                 method: 'GET',
                 headers: {
-                    'x-rapidapi-key': '23440d752fmsh0bce66bf6c5a2c0p1486cfjsn35a15b05da7d',
-                    'x-rapidapi-host': 'cloud-api-hub-youtube-downloader.p.rapidapi.com'
+                    'x-rapidapi-key': '04275214aemsh14a4471cee4ae06p179daejsn4ad3eb3b8f50',
+                    'x-rapidapi-host': 'youtube-v2.p.rapidapi.com'
                 }
             };
 
             $.ajax(settings).done(function (response) {
+                $('#loadingInforVideoPopup').fadeOut();
                 if (response) {
 
                     document.getElementById("thumbnail").src = response.thumbnails[4].url;
@@ -430,46 +482,40 @@
                 alert("Lỗi khi tải dữ liệu. Hãy kiểm tra API key hoặc thử lại sau.");
             });
         }
-        function Download_Video_Youtube(url, quality) {
-            const apiUrl = `https://cloud-api-hub-youtube-downloader.p.rapidapi.com/mux?id=${url}&quality=${quality}&audioFormat=best&language=en`;
-
+        async function Download_Video_Youtube(url, quality) {
+            $('#loadingVideoPopup').fadeIn();
             const settings = {
+                async: true,
+                crossDomain: true,
+                url: `https://cloud-api-hub-youtube-downloader.p.rapidapi.com/mux?id=${url}&quality=${quality}&audioFormat=best&language=en`,
                 method: 'GET',
                 headers: {
-                    'x-rapidapi-key': '04275214aemsh14a4471cee4ae06p179daejsn4ad3eb3b8f50',
+                    'x-rapidapi-key': '23440d752fmsh0bce66bf6c5a2c0p1486cfjsn35a15b05da7d',
                     'x-rapidapi-host': 'cloud-api-hub-youtube-downloader.p.rapidapi.com'
                 }
             };
-
-            $.ajax(settings).done(function (response) {
-                if (response && response.url) {
-                    const filename = `${quality}_${response.filename}`;
-                    StartDownload_Videoyoutube(response.url, filename);
-                } else {
-                    alert("Không tìm thấy video hoặc lỗi API.");
+            try{
+                const response = await $.ajax(settings);
+                if(response){
+                    const filename = quality + '_' + response.filename;
+                    const fileResponse = await fetch(response.url); // Tải file từ link nhận được
+                    const blob = await fileResponse.blob();
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                }else{
+                    alert("Lỗi tải file. Hãy thử lại.");
                 }
-            }).fail(function () {
-                alert("Lỗi khi gọi APuyyuffuitI. Vui lòng kiểm tra lại.");
-            });
-        }
-        async function StartDownload_Videoyoutube(url, filename) {
-            try {
-                const response = await fetch(url);
-                const blob = await response.blob();
-                const downloadUrl = window.URL.createObjectURL(blob); // Đổi tên để tránh xung đột
-
-                const a = document.createElement('a');
-                a.href = downloadUrl;
-                a.download = filename;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-
-                window.URL.revokeObjectURL(downloadUrl);
-            } catch (error) {
-                alert("Lỗi khi tải video. Vui lòng thử lại!");
-                console.error("Error:", error);
+            }catch(error){
+                alert("Lỗi tải file. Hãy thử lại.");
+            } finally{
+                $('#loadingVideoPopup').fadeOut();
             }
+
         }
 
         function Infor_Mp3_Youtube() {
@@ -478,56 +524,110 @@
                 alert("Vui lòng nhập link video YouTube.");
                 return;
             }
-
             const videoUrl = getYouTubeVideoId(url);
             if (!videoUrl) {
                 alert("URL không hợp lệ.");
                 return;
             }
+            $('#loadingInforVideoPopup').fadeIn();
 
             const settings = {
                 async: true,
                 crossDomain: true,
-                url: 'https://youtube-mp3-2025.p.rapidapi.com/v1/social/youtube/audio',
-                method: 'POST',
+                url: 'https://youtube-v2.p.rapidapi.com/video/details?video_id='+videoUrl,
+                method: 'GET',
                 headers: {
                     'x-rapidapi-key': '04275214aemsh14a4471cee4ae06p179daejsn4ad3eb3b8f50',
-                    'x-rapidapi-host': 'youtube-mp3-2025.p.rapidapi.com',
-                    'Content-Type': 'application/json'
-                },
-                processData: false,
-                data: JSON.stringify({ id: videoUrl })
-            };
-
-            $.ajax(settings).done(function (response) {
-                if (!response || !response.thumbnail || !response.thumbnail.thumbnails) {
-                    alert("Không thể lấy thông tin video. Vui lòng thử lại.");
-                    return;
+                    'x-rapidapi-host': 'youtube-v2.p.rapidapi.com'
                 }
-
-                let thumbnails = response.thumbnail.thumbnails;
-                let thumbnailUrl = thumbnails.length > 4 ? thumbnails[4].url : thumbnails[thumbnails.length - 1].url;
-                document.getElementById("thumbnail").src = thumbnailUrl;
-                document.getElementById("title").textContent = response.title || "Không có tiêu đề";
-
-                // Tạo button tải với sự kiện đúng
-                let downloadButtons = `<button onclick="Download_Mp3_Youtube('${response.linkDownload}', '${response.videoId}')">Download File Mp3</button>`;
-                document.getElementById("downloadButtons").innerHTML = downloadButtons;
-
-                // Chuyển form hiển thị
-                $("#form_GetUrl").fadeOut(500, function () {
-                    $("#form_InfoVideo").fadeIn(500);
-                });
+            };
+            $.ajax(settings).done(function (response) {
+                $('#loadingInforVideoPopup').fadeOut();
+                if (response) {
+                    let thumbnails = response.thumbnails;
+                    let thumbnailUrl = thumbnails.length > 4 ? thumbnails[4].url : thumbnails[thumbnails.length - 1].url;
+                    document.getElementById("thumbnail").src = thumbnailUrl;
+                    document.getElementById("title").textContent = response.title || "Không có tiêu đề";
+                    let downloadButtons = `<button onclick="Download_Mp3_Youtube('${videoUrl}')">Download File Mp3</button>`;
+                    document.getElementById("downloadButtons").innerHTML = downloadButtons;
+                    $("#form_GetUrl").fadeOut(500, function () {
+                        $("#form_InfoVideo").fadeIn(500);
+                    });
+                }     
             }).fail(function () {
                 alert("Lỗi khi tải dữ liệu. Hãy kiểm tra API hoặc thử lại sau.");
             });
         }
+        async function Download_Mp3_Youtube(videoUrl) {
+            $('#loadingMp3Popup').fadeIn(); // Hiển thị popup loading trước khi gửi request
 
-        async function Download_Mp3_Youtube(url2, filename) {
-            window.location.href = url2;
+            const settings = {
+                async: true,
+                crossDomain: true,
+                url: 'https://youtube-mp36.p.rapidapi.com/dl?id=' + videoUrl,
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': '04275214aemsh14a4471cee4ae06p179daejsn4ad3eb3b8f50',
+                    'x-rapidapi-host': 'youtube-mp36.p.rapidapi.com'
+                }
+            };
+
+            try {
+                const response = await $.ajax(settings); // Gửi request và đợi phản hồi
+                if (response && response.link) {
+                    const filename = response.title.replace(/[^\w\s]/gi, '') + '.mp3';
+                    const fileResponse = await fetch(response.link); // Tải file từ link nhận được
+                    const blob = await fileResponse.blob();
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = filename;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(link.href);
+                } else {
+                    console.error("Không tìm thấy link tải.");
+                }
+            } catch (error) {
+                console.error("Lỗi tải về:", error);
+            } finally {
+                $('#loadingMp3Popup').fadeOut(); // Ẩn popup loading sau khi hoàn tất
+            }
         }
 
 
+
     </script>
+    <div id="loadingInforVideoPopup" style="display: none;">
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <p>Đang tải thông tin video, anh đợi một lát...</p>
+        </div>
+    </div>
+    <div id="loadingVideoPopup" style="display: none;">
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <p>Đang tải Video...</p>
+        </div>
+    </div>
+    <div id="loadingInforPhotoPopup" style="display: none;">
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <p>Đang tải thông tin hình ảnh, anh đợi một lát...</p>
+        </div>
+    </div>
+    <div id="loadingPhotoPopup" style="display: none;">
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <p>Đang tải hình ảnh...</p>
+        </div>
+    </div>
+    <div id="loadingMp3Popup" style="display: none;">
+        <div class="loading-container">
+            <div class="spinner"></div>
+            <p>Đang tải file mp3...</p>
+        </div>
+    </div>
+    
 </body>
 </html>
